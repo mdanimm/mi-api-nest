@@ -13,7 +13,7 @@ export class TasksController {
   @ApiOperation({ summary: 'Obtener todas las tareas' })
   @Get()
   findAll() { 
-    console.log('--- Log desde main ---');
+    console.log('--- Log desde la feature ---');
     return this.tasksService.findAll();
    }
 
