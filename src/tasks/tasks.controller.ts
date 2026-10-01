@@ -12,7 +12,10 @@ export class TasksController {
 
   @ApiOperation({ summary: 'Obtener todas las tareas' })
   @Get()
-  findAll() { return this.tasksService.findAll(); }
+  findAll() { 
+    console.log('--- Alguien está consultando todas las tareas ---');
+    return this.tasksService.findAll();
+   }
 
   @ApiOperation({ summary: 'Obtener tarea por ID' })
   @ApiResponse({ status: 200, description: 'Tarea encontrada.', type: Task })
