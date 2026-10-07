@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Task } from './entities/task.entity.js';
 import { CreateTaskDto } from './dto/create-task.dto.js';
 import { UpdateTaskDto } from './dto/update-task.dto.js';
@@ -14,6 +14,19 @@ export class TasksService {
 
   findAll(): Promise<Task[]> {
     return this.taskRepository.find();
+  }
+
+  async search(q: string): Promise<Task[]> {
+    const term = q?.trim();
+
+    if (!term) {
+      return [];
+    }
+
+    return this.taskRepository.find({
+      where: { title: Like(`%${term}%`) },
+      order: { id: 'ASC' },
+    });
   }
 
   async findOne(id: number): Promise<Task> {
