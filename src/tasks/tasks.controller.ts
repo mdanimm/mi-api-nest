@@ -1,8 +1,17 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiNotFoundResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { TasksService } from './tasks.service.js';
 import { CreateTaskDto } from './dto/create-task.dto.js';
 import { UpdateTaskDto } from './dto/update-task.dto.js';
+import { PaginationQueryDto } from './dto/pagination-query.dto.js';
+import { PaginatedTasksResponseDto } from './dto/paginated-tasks-response.dto.js';
 import { Task } from './entities/task.entity.js';
 
 @ApiTags('tasks')
@@ -10,11 +19,13 @@ import { Task } from './entities/task.entity.js';
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
-  @ApiOperation({ summary: 'Obtener todas las tareas' })
+  @ApiOperation({ summary: 'Obtener todas las tareas paginadas' })
+  @ApiQuery({ name: 'page', required: false, type: Number, minimum: 1, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, minimum: 1, maximum: 100, example: 10 })
+  @ApiOkResponse({ type: PaginatedTasksResponseDto })
   @Get()
-  findAll() {
-    console.log('--- Choque desde main ---');
-    return this.tasksService.findAll();
+  findAll(@Query() query: PaginationQueryDto) {
+    return this.tasksService.findAll(query.page, query.limit);
   }
 
   @ApiOperation({ summary: 'Buscar tareas por título' })
